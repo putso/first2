@@ -1,10 +1,471 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Document</title>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
-	Test
-</body>
-</html>
+    <canvas id="canvas" width="900" height="500">
+    <canvas id="canvas" width="900" height="500">
+
+    </canvas>
+    <script>
+       let f= window.onload;
+       let mas = [];
+       
+       console.log(mas);
+       let canvas = document.getElementById("canvas");
+       let  ctx = canvas.getContext("2d");
+       let x = canvas.width/2;
+       console.log(x);
+       mas.push({x:300,y:canvas.height-90,h:50,w:50});
+       let y = 100;
+       let dx = 0;
+       let sdx = 1;
+       let dy = 0;
+       let a =0;
+       let r;
+       let g=0.01;
+       let dt;
+       let down;
+       let px,py,dmx,dmy,x1,y1;
+       let frame=0;
+       let countjump=3;
+       let step=0;
+       let step2=0;
+       let up,left,jump,right;
+       let ds=0;
+       let chcl=false;
+       let speedspawn=0;
+       let point =0;
+       let immortal = 0 ;
+       let go = 1;
+       canvas.onmousedown = function ()
+       {
+            if(Math.abs(x-event.pageX)<50 && Math.abs(y-event.pageY)<50)
+            {
+                chcl=true;
+            }
+            else chcl=false;
+            console.log(x," ",event.pageX,"   ",y," ",event.pageY," ",Math.abs(x-event.pageX)<50 && Math.abs(y-event.pageY)<50);
+       }
+       function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI*2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.moveTo(x,y);
+            ctx.lineTo(x+10*dx,y+10*dy);
+            ctx.StrokeStyle = "black";
+            ctx.stroke();
+            ctx.closePath();
+            
+            
+
+        }
+        function drawpoint()
+        {
+            
+            ctx.beginPath();
+            ctx.font = "italic 30pt Arial";
+            ctx.fillText(point, 30 ,30);
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+            
+        }
+        function drawp(x,y,h,w)
+        {
+            ctx.beginPath();
+            ctx.moveTo(x,y);
+            ctx.lineTo(x+w,y);
+            ctx.lineTo(x+w,y+h);
+            ctx.lineTo(x,y+h);
+            ctx.lineTo(x,y);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+            
+             
+        }
+        
+        ondragstart = function() {
+        return false;
+        };
+        onmousedown = function(event) { 
+            
+
+
+        moveAt(event.pageX, event.pageY);
+        function moveAt(pageX, pageY) {
+            px = pageX;
+            py = pageY;
+            
+            
+            
+            
+            // console.log(dx+" "+dy);
+            down = true;
+        }
+
+        function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+        }
+
+        // (3) перемещать по экрану
+        document.addEventListener('mousemove', onMouseMove);
+
+        // (4) положить мяч, удалить более ненужные обработчики событий
+        onmouseup = function() {
+            chcl=false;
+        document.removeEventListener('mousemove', onMouseMove);
+        onmouseup = null;
+        down=false;
+        };
+
+        };
+        function checkball()
+        {
+           let i = mas[0];
+           g=0.01;
+           for(let j=0;j<mas.length;j++)
+           {
+               i=mas[j]
+            //    console.log(i.x);
+            if(x+10-i.x>0 && x-i.x-10<i.w)
+            {
+                //проверка столкновения с блоками
+                if(y-i.y-i.h-10>0)
+                {
+                    if(y+dy-i.y-i.h-10<=0)
+                    {
+                        dy=-dy;
+                        dy=dy/1.1;
+                    }
+                }
+                if(y-i.y+10<0)
+                {
+                    if(y+dy-i.y+11>=0)
+                    {
+                    
+                        dy=-dy;
+                        dy=dy/1.1;
+                        g=0;
+                        console.log(dy);
+                        
+                        countjump=3;
+                    }
+                }
+                
+            }
+            else if(y+10-i.y>0 && y-i.y-10<i.h)
+            {
+                if(x-10-i.x-i.w>0)
+                {
+                    if(x-10+dx-i.x-i.w<=0)
+                    {
+                        dx=-dx;
+                    }
+                }
+                if(x-i.x+10<0)
+                {
+                    
+                    if(x+dx-i.x+10+sdx>=0)
+                    {
+                        console.log("true2");
+                        x=i.x-10-3*sdx;
+                        dx=-dx;
+                        
+                        
+                        
+                    }
+                }
+                
+            }
+            else if((x+dx+10 - i.x>0 && x+dx-10 - i.x<i.w) && (y+dy-i.y+10>0 && y+dy-i.y-10<i.h )) 
+            {
+                dx=-dx;
+                dy=-dy;
+
+            }
+            }
+            
+
+
+
+            
+        }
+        function drawob()
+        {
+
+        }
+        function drawsmert()
+        {
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.lineTo(30,0);
+            ctx.lineTo(30,canvas.height-30);
+            ctx.lineTo(canvas.width,canvas.height-30);
+            ctx.lineTo(canvas.width,canvas.height);
+            ctx.lineTo(0,canvas.height);
+            ctx.lineTo(0,0);
+
+            
+            ctx.lineTo(0,0);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+
+        }
+        
+       
+        function draw(event) {
+            ctx.fillStyle = "url('http://www.samskirrow.com/background.png')";
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawsmert();
+            for(let q=0;q<mas.length;q++)
+            {
+                drawp(mas[q].x,mas[q].y,mas[q].h,mas[q].w);
+                if(go) mas[q].x-=sdx;
+                if(mas[0].x+mas[0].w<0)
+                {
+                    mas.shift();
+                    point+=10;
+                }
+
+                
+            }
+            if(speedspawn==100)
+            {
+                if(go) mas.push({x:canvas.width,y:Math.floor(Math.random()*(canvas.height-100)+50),h:50,w:50});
+                speedspawn=0;
+            }
+            speedspawn++;
+
+            drawBall();
+            
+            
+        
+             //console.log(dx +" "+dy +" "+x+" "+y);
+            if(!down || !chcl)
+            {
+                    dy=dy+g;
+                dy=dy/1.001;
+                dx=dx/1.001;
+                if(y+10>=canvas.height)
+                {
+                    dy=-dy+g;
+                    dy=dy/1.1;
+                    y=canvas.height-10;
+                    countjump=3;
+                    if(!immortal)
+                    {
+                        alert("CМЭРТЬ");
+                        location.reload();
+                    }
+                    // console.log(dt);
+                }
+                else if(y-10<=0)
+                {
+                    dy=-dy+g;
+                    dy=dy/1.1;
+                    y=10;
+                   
+                }
+                if(x+10>=canvas.width)
+                {
+                    dx=-dx;
+                    dx=dx/1.1;
+                    x=canvas.width-10;
+                }
+                else if(x-10<=0)
+                {
+                    dx=-dx;
+                    dx=dx/1.1;
+                    x=10;
+                    if(!immortal)
+                    {
+                        alert("CМЭРТЬ");
+                        location.reload();
+                    }
+
+                }
+                checkball();
+                y+=dy;
+                x+=dx;
+            if(y-100<0.1)
+            {
+                dt=dy;
+
+            }
+            }
+            if(countjump>0 && up)
+                {
+                    if(step==100)
+                    {
+                        countjump--;
+                        dy=-1;
+                        step=0;
+                        // console.log("jump2");
+                    }
+                }
+                if(!up)
+                {
+                    step=100;
+                }
+                 if(dx<2 && right)
+                     {
+                         if(dx<0)
+                         {
+                             step2=0;
+                             dx=0;
+                         }
+                         else 
+                         {
+                            dx+=0.1;
+                         }
+                         step2++;
+                         
+
+                        
+                     }
+                     if(dx>-2 && left)
+                        {
+                            if(dx>0)
+                            {
+                                step2=0
+                                dx=0;
+                            }
+                            else 
+                            {
+                                dx+=-0.1;
+                            }
+                            step2++;
+                        }
+                        if(step<100)
+                        {
+                            step++
+                        }
+                        if(down && chcl)
+                        {
+                            if(ds==0)
+                            {
+                                x1=x;
+                                y1=y;
+                            }
+                            ds++;
+                           
+                            // console.log(x1," ",x,"   ",y1," ",y)
+                            
+                            if(ds==3)
+                            {
+                                dx=(px-x1)/3;
+                                dy=(py-y1)/3;
+                                ds=0;
+                                x=px;
+                                y=py;
+                            }
+                        }
+
+                        
+
+
+            
+            
+            
+            
+
+            
+            
+                        drawpoint();
+        }
+        window.onkeydown = function move_left(){
+         console.log(event.keyCode);
+
+            if(event.keyCode==87 || event.keyCode==32 || event.keyCode==74  ){
+                // if(countjump>0)
+                // {
+                //     countjump--;
+                //     dy=-1;
+                // }
+                up=true;
+                
+
+               
+            }
+            if(event.keyCode==68){
+                  
+                    //  if(dx<2)
+                    //  {
+                    //     dx+=1;
+                    //  }
+                    right=true;
+                   
+                
+                }
+            if(event.keyCode==65)
+            {
+            //    if(dx>-2)
+            //    {
+            //     dx+=-1;
+            //    }
+            left=true;
+
+            }
+            if(event.keyCode==40)
+            {
+
+            }
+        }
+        window.onkeyup = function()
+        {
+            // console.log(event.keyCode);
+
+            if(event.keyCode==87 || event.keyCode==32 || event.keyCode==74  ){
+                // if(countjump>0)
+                // {
+                //     countjump--;
+                //     dy=-1;
+                // }
+                up=false;
+                
+
+            
+            }
+            if(event.keyCode==68){
+                
+                    //  if(dx<2)
+                    //  {
+                    //     dx+=1;
+                    //  }
+                    right=false;
+                
+                
+                }
+            if(event.keyCode==65)
+            {
+            //    if(dx>-2)
+            //    {
+            //     dx+=-1;
+            //    }
+            left=false;
+
+            }
+        }
+        
+
+
+        setInterval(draw, 1);
+    </script>
+
+</body></html>
